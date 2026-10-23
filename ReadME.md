@@ -4,7 +4,7 @@ An internal web application for booking meeting rooms and shared resources such 
 
 ## Tech Stack
 
-| Component | Technology |
+| Component | Technology | 
 |---|---|
 | Frontend | React.js, Vite, Tailwind CSS |
 | Backend | Node.js, Express.js |
