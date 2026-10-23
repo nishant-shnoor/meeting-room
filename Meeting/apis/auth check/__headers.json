@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1792747062276009,
+    "key": "authorization",
+    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZW1wbG95ZWUiLCJpYXQiOjE3OTI3NDY5NzcsImV4cCI6MTc5MzM1MTc3Nywic3ViIjoiOTk5NGYxMjAtZjRkMC00NzE0LWEzNGUtYjdhMjExZmM1NGMxIn0.1LubMeXwxdqroJMrYeeRAHh_browB8V_IseNALUcZWU",
+    "isEnabled": true,
+    "description": "",
+    "dataType": "string"
+  }
+]
