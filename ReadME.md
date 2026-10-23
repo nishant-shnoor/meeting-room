@@ -12,4 +12,4 @@ Employee: view resources, book, edit and cancel own bookings, view calendar.
 Admin: everything an employee can do, plus manage resources, operating hours and booking restrictions.
 
 Current status
-Day 1: requirements and wireframes done. Database schema and project setup next.
+Day 2: requirements and wireframes done. Database schema and project setup next.
