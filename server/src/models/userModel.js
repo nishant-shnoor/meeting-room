@@ -14,6 +14,11 @@ const toUser = (row) =>
 
 export const toPublicUser = ({ id, name, email, role }) => ({ id, name, email, role })
 
+export async function findUserById(id) {
+  const { rows } = await pool.query(`select ${columns} from users where id = $1`, [id])
+  return toUser(rows[0])
+}
+
 export async function findUserByEmail(email) {
   const { rows } = await pool.query(`select ${columns} from users where email = $1`, [email])
   return toUser(rows[0])

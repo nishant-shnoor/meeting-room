@@ -30,3 +30,7 @@ export async function login(req, res) {
 
   res.json(sessionFor(user))
 }
+
+export function currentUser(req, res) {
+  res.json(toPublicUser(req.user))
+}
