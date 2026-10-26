@@ -2,6 +2,7 @@ import { HttpError, notFound } from '../utils/httpError.js'
 
 const constraintMessages = {
   users_email_key: 'An account with this email already exists',
+  resources_name_unique: 'A resource with this name already exists',
 }
 
 export function routeNotFound(req, res, next) {

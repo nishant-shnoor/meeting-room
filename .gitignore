@@ -1,3 +1,9 @@
+/*
+!/.gitignore
+!/client
+!/server
+!/docs
+
 node_modules
 .env
 .env.*
