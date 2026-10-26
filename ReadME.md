@@ -225,7 +225,7 @@ Build a reliable internal booking system that allows employees to reserve meetin
 - [x] JWT authentication
 - [x] Protected routes
 - [x] Admin role-checking middleware
-- [ ] Resource management
+- [x] Resource management
 - [ ] Booking creation and validation
 - [ ] Double-booking prevention
 - [ ] Booking editing and cancellation
