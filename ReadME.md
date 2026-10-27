@@ -66,9 +66,9 @@ Build a reliable internal booking system that allows employees to reserve meetin
 - [x] Protected routes
 - [x] Admin role-checking middleware
 - [x] Resource management
-- [ ] Booking creation and validation
-- [ ] Double-booking prevention
-- [ ] Booking editing and cancellation
+- [x] Booking creation and validation
+- [x] Double-booking prevention
+- [x] Booking editing and cancellation
 - [ ] Calendar and availability views
 - [ ] Operating hours and booking restrictions
 - [ ] Frontend integration

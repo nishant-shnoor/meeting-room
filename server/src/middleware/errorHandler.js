@@ -2,6 +2,7 @@ import { HttpError, notFound } from '../utils/httpError.js'
 
 const constraintMessages = {
   users_email_key: 'An account with this email already exists',
+  no_double_booking: 'This time overlaps an existing booking. Please pick another slot.',
   resources_name_unique: 'A resource with this name already exists',
 }
 
@@ -24,7 +25,7 @@ export function errorHandler(error, req, res, next) {
     return res.status(413).json({ message: 'Request body is too large' })
   }
 
-  if (error.code === '23505') {
+  if (error.code === '23505' || error.code === '23P01') {
     return res.status(409).json({ message: constraintMessages[error.constraint] || 'That record already exists' })
   }
 

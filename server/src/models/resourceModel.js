@@ -25,3 +25,8 @@ export async function createResource({ name, type, capacity, facilities, descrip
   )
   return toResource(rows[0])
 }
+
+export async function findResource(id, db = pool) {
+  const { rows } = await db.query(`select ${columns} from resources where id = $1`, [id])
+  return rows[0] ? toResource(rows[0]) : null
+}
