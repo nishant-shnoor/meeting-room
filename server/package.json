@@ -8,9 +8,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "db:setup": "node scripts/setupDatabase.js",
-    "db:seed": "node scripts/seedDatabase.js",
-    "test": "node --test"
+    "db:setup": "node scripts/setupDatabase.js"
   },
   "engines": {
     "node": ">=20"
