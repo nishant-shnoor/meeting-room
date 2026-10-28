@@ -11,46 +11,25 @@ An internal web application for booking meeting rooms and shared resources such 
 | Database | PostgreSQL (Supabase) |
 | Authentication | JSON Web Tokens (JWT) |
 
-## User Roles
-
-### Employee
-- View available meeting rooms and shared resources.
-- Create bookings.
-- Edit their own bookings.
-- Cancel their own bookings.
-- View the booking calendar.
-
-### Admin
-- Access all employee features.
-- Manage meeting rooms and shared resources.
-- Manage operating hours.
-- Configure booking restrictions.
-
 ## Current Development Status
 
-**Day 3 — Backend Structure and Authentication Completed**
+**Day 5 — Backend Structure Completed**
 
 The backend project structure has been established, and the initial authentication functionality is implemented.
 
 ### Completed
-- Set up the Node.js and Express.js server.
-- Organized the backend into separate modules.
-- Configured environment variables.
-- Connected PostgreSQL through Supabase.
-- Implemented user registration.
-- Implemented user login.
-- Added JWT-based authentication.
-- Implemented protected routes.
-- Added admin role-checking middleware.
-- Implemented centralized error handling and input validation.
-- Develop the resource management APIs.
+
+The complete backend is built and tested: authentication, resource management, operating hours, booking restrictions, booking creation, editing and cancellation with double-booking prevention, availability, booking history and admin booking lists.
 
 ### Next Steps
-- Implement meeting room and resource booking.
-- Prevent overlapping bookings and double reservations.
-- Add booking updates and cancellations.
-- Build the booking calendar and availability views.
-- Implement operating hours and booking restrictions.
+
+- Build the resource list and resource detail screens
+- Build the new booking form and the My Bookings page
+- Build the daily, weekly and monthly calendar views
+- Build the admin screens for resources, operating hours, restrictions and all bookings
+- Connect all screens to the backend API
+- Test the full flow and deploy
+
 
 ## Project Goal
 
@@ -58,18 +37,15 @@ Build a reliable internal booking system that allows employees to reserve meetin
 
 ## Development Progress
 
-- [x] Backend project structure
-- [x] PostgreSQL and Supabase connection
-- [x] User registration
-- [x] User login
-- [x] JWT authentication
-- [x] Protected routes
-- [x] Admin role-checking middleware
-- [x] Resource management
-- [x] Booking creation and validation
-- [x] Double-booking prevention
-- [x] Booking editing and cancellation
-- [ ] Calendar and availability views
-- [ ] Operating hours and booking restrictions
-- [ ] Frontend integration
+- [x] Backend 
+- [ ] Testing Backend
+- [ ] Resource list and resources detail screens
+- [ ] New Booking form
+- [ ] My Booking Page
+- [ ] Daily, weekly and monthly calendar views
+- [ ] Admin screen for resources
+- [ ] Admin screen for operating hours
+- [ ] Admin screen restrictions
+- [ ] Admin screen for all bookings
+- [ ] Connecting all screens to the backend API
 - [ ] Testing and deployment
