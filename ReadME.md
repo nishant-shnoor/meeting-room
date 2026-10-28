@@ -17,10 +17,6 @@ An internal web application for booking meeting rooms and shared resources such 
 
 The backend project structure has been established, and the initial authentication functionality is implemented.
 
-### Completed
-
-The complete backend is built and tested: authentication, resource management, operating hours, booking restrictions, booking creation, editing and cancellation with double-booking prevention, availability, booking history and admin booking lists.
-
 ### Next Steps
 
 - Build the resource list and resource detail screens
