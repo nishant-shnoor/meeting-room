@@ -22,4 +22,3 @@ const shutDown = () => {
 
 process.on('SIGTERM', shutDown)
 process.on('SIGINT', shutDown)
- 

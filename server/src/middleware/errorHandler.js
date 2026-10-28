@@ -1,9 +1,10 @@
 import { HttpError, notFound } from '../utils/httpError.js'
 
 const constraintMessages = {
-  users_email_key: 'An account with this email already exists',
-  no_double_booking: 'This time overlaps an existing booking. Please pick another slot.',
   resources_name_unique: 'A resource with this name already exists',
+  users_email_key: 'An account with this email already exists',
+  no_double_booking:
+    'This time overlaps an existing booking. Please pick another slot.',
 }
 
 export function routeNotFound(req, res, next) {
@@ -11,10 +12,15 @@ export function routeNotFound(req, res, next) {
 }
 
 export function errorHandler(error, req, res, next) {
-  if (res.headersSent) return next(error)
+  if (res.headersSent) {
+    return next(error)
+  }
 
   if (error instanceof HttpError) {
-    return res.status(error.status).json({ message: error.message, ...(error.fields && { errors: error.fields }) })
+    return res.status(error.status).json({
+      message: error.message,
+      ...(error.fields && { errors: error.fields }),
+    })
   }
 
   if (error.type === 'entity.parse.failed') {
@@ -26,7 +32,10 @@ export function errorHandler(error, req, res, next) {
   }
 
   if (error.code === '23505' || error.code === '23P01') {
-    return res.status(409).json({ message: constraintMessages[error.constraint] || 'That record already exists' })
+    return res.status(409).json({
+      message:
+        constraintMessages[error.constraint] || 'That record already exists',
+    })
   }
 
   console.error(error)

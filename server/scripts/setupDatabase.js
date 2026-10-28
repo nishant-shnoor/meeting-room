@@ -1,7 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import pool from '../src/config/db.js'
 
-const schema = await readFile(new URL('../database/schema.sql', import.meta.url), 'utf8')
+const schema = await readFile(
+  new URL('../database/schema.sql', import.meta.url),
+  'utf8',
+)
 
 try {
   await pool.query(schema)

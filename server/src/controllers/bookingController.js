@@ -1,5 +1,6 @@
 import {
   findBookingRow,
+  listHistory,
   listBookingsInRange,
   listUserBookings,
   searchBookings,
@@ -25,17 +26,45 @@ export async function listCalendar(req, res) {
 
 export async function getOne(req, res) {
   const row = await findBookingRow(req.params.id)
-  if (!row) throw notFound('Booking not found')
-  if (row.user_id !== req.user.id && req.user.role !== 'admin') throw forbidden('You can only view your own bookings')
+
+  if (!row) {
+    throw notFound('Booking not found')
+  }
+
+  if (row.user_id !== req.user.id && req.user.role !== 'admin') {
+    throw forbidden('You can only view your own bookings')
+  }
   res.json(toBooking(row, req.user))
 }
 
-export async function create(req, res) {
-  res.status(201).json(await bookingService.createBooking(req.user, req.validated.body))
+export async function history(req, res) {
+  const row = await findBookingRow(req.params.id)
+
+  if (!row) {
+    throw notFound('Booking not found')
+  }
+
+  if (row.user_id !== req.user.id && req.user.role !== 'admin') {
+    throw forbidden('You can only view your own bookings')
+  }
+
+  res.json(await listHistory(row.id))
 }
 
-export async function edit(req, res) {
-  res.json(await bookingService.editBooking(req.user, req.params.id, req.validated.body))
+export async function create(req, res) {
+  res
+    .status(201)
+    .json(await bookingService.createBooking(req.user, req.validated.body))
+}
+
+export async function update(req, res) {
+  res.json(
+    await bookingService.updateBooking(
+      req.user,
+      req.params.id,
+      req.validated.body,
+    ),
+  )
 }
 
 export async function cancel(req, res) {

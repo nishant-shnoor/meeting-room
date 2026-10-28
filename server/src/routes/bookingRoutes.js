@@ -13,17 +13,29 @@ import {
 
 const router = Router()
 
-router.param('id', (req, res, next, id) => (uuidPattern.test(id) ? next() : next(notFound('Booking not found'))))
+router.param('id', (req, res, next, id) =>
+  uuidPattern.test(id) ? next() : next(notFound('Booking not found')),
+)
 
 router.use(authenticate)
 
 router.get('/mine', bookings.listMine)
-router.get('/calendar', validate(calendarQuerySchema, 'query'), bookings.listCalendar)
-router.get('/', requireAdmin, validate(bookingFiltersSchema, 'query'), bookings.listAll)
+router.get(
+  '/calendar',
+  validate(calendarQuerySchema, 'query'),
+  bookings.listCalendar,
+)
+router.get(
+  '/',
+  requireAdmin,
+  validate(bookingFiltersSchema, 'query'),
+  bookings.listAll,
+)
 router.post('/', validate(bookingSchema), bookings.create)
 
 router.get('/:id', bookings.getOne)
-router.put('/:id', validate(bookingUpdateSchema), bookings.edit)
+router.get('/:id/history', bookings.history)
+router.put('/:id', validate(bookingUpdateSchema), bookings.update)
 router.patch('/:id/cancel', bookings.cancel)
 
 export default router
