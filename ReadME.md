@@ -17,20 +17,6 @@ An internal web application for booking meeting rooms and shared resources such 
 
 The backend project structure has been established, and the initial authentication functionality is implemented.
 
-### Next Steps
-
-- Build the resource list and resource detail screens
-- Build the new booking form and the My Bookings page
-- Build the daily, weekly and monthly calendar views
-- Build the admin screens for resources, operating hours, restrictions and all bookings
-- Connect all screens to the backend API
-- Test the full flow and deploy
-
-
-## Project Goal
-
-Build a reliable internal booking system that allows employees to reserve meeting rooms and shared resources efficiently while preventing conflicting reservations and giving administrators control over resources, operating hours, and booking policies.
-
 ## Development Progress
 
 - [x] Backend 
