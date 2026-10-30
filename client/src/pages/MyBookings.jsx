@@ -30,7 +30,6 @@ export default function MyBookings() {
       (booking) => getDisplayStatus(booking) === tab.status,
     )
     const direction = activeTab === 'upcoming' ? 1 : -1
-
     return matching.sort(
       (a, b) => direction * (new Date(a.startTime) - new Date(b.startTime)),
     )
@@ -44,12 +43,12 @@ export default function MyBookings() {
   return (
     <>
       <PageHeader title="My bookings">
-        <Link to="/resources" className={buttonClass('primary')}>
+        <Link to="/rooms" className={buttonClass('primary')}>
           New booking
         </Link>
       </PageHeader>
 
-      <div className="mb-4 flex gap-1 border-b border-gray-200" role="tablist">
+      <div className="mb-4 flex gap-1 border-b border-line" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -60,8 +59,8 @@ export default function MyBookings() {
             className={cn(
               '-mb-px border-b-2 px-4 py-2 text-sm font-medium',
               activeTab === tab.key
-                ? 'border-gray-900 text-gray-900'
-                : 'border-transparent text-gray-500 hover:text-gray-800',
+                ? 'border-brand text-brand-ink'
+                : 'border-transparent text-muted hover:text-ink',
             )}
           >
             {tab.label}

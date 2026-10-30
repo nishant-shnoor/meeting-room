@@ -9,6 +9,12 @@ export default function BookingDetailsModal({ booking, onClose }) {
     ['Date', formatLongDate(booking.startTime)],
     ['Time', formatTimeRange(booking.startTime, booking.endTime)],
     booking.userName && ['Booked by', booking.userName],
+    [...(booking.builtIn ?? []), ...(booking.addOns ?? [])].length > 0 && [
+      'Includes',
+      [...(booking.builtIn ?? []), ...(booking.addOns ?? [])]
+        .map((item) => item.name)
+        .join(', '),
+    ],
     booking.purpose && ['Purpose', booking.purpose],
   ].filter(Boolean)
 
@@ -17,12 +23,12 @@ export default function BookingDetailsModal({ booking, onClose }) {
       <dl className="space-y-2 text-sm">
         {rows.map(([term, detail]) => (
           <div key={term} className="flex justify-between gap-4">
-            <dt className="text-gray-500">{term}</dt>
-            <dd className="text-right font-medium text-gray-900">{detail}</dd>
+            <dt className="text-muted">{term}</dt>
+            <dd className="text-right font-medium text-ink">{detail}</dd>
           </div>
         ))}
         <div className="flex justify-between gap-4">
-          <dt className="text-gray-500">Status</dt>
+          <dt className="text-muted">Status</dt>
           <dd>
             <StatusBadge status={getDisplayStatus(booking)} />
           </dd>

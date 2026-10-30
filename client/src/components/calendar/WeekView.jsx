@@ -11,13 +11,11 @@ export default function WeekView({
 }) {
   const columns = useMemo(() => {
     const today = now()
-
     return Array.from({ length: 7 }, (_, offset) => {
       const day = addDays(weekStart, offset)
       const dayBookings = bookings.filter((booking) =>
         isSameDay(new Date(booking.startTime), day),
       )
-
       return {
         key: toDateValue(day),
         header: day.toLocaleDateString('en-GB', {

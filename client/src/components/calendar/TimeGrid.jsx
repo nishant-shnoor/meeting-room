@@ -18,16 +18,16 @@ export default function TimeGrid({
   onSelectBooking,
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+    <div className="overflow-x-auto rounded-lg border border-line bg-surface">
       <div style={{ minWidth: 56 + columns.length * minColumnWidth }}>
-        <div className="flex border-b border-gray-200 bg-gray-100 text-sm font-semibold text-gray-800">
+        <div className="flex border-b border-line bg-sunken text-sm font-semibold text-ink">
           <div className="w-14 shrink-0" />
           {columns.map((column) => (
             <div
               key={column.key}
               className={cn(
-                'min-w-0 flex-1 truncate border-l border-gray-200 px-2 py-2',
-                column.highlight && 'bg-gray-200',
+                'min-w-0 flex-1 truncate border-l border-line px-2 py-2',
+                column.highlight && 'bg-subtle',
               )}
             >
               {column.header}
@@ -41,7 +41,7 @@ export default function TimeGrid({
               <div
                 key={hour}
                 style={{ height: HOUR_HEIGHT }}
-                className="pr-2 pt-1 text-right text-xs text-gray-500"
+                className="pr-2 pt-1 text-right text-xs text-muted"
               >
                 {formatHour(hour)}
               </div>
@@ -51,7 +51,7 @@ export default function TimeGrid({
           {columns.map((column) => (
             <div
               key={column.key}
-              className="relative min-w-0 flex-1 border-l border-gray-200"
+              className="relative min-w-0 flex-1 border-l border-line"
             >
               {hours.map((hour) => (
                 <button
@@ -60,7 +60,7 @@ export default function TimeGrid({
                   onClick={() => column.onSlotClick(hour)}
                   aria-label={`Book ${column.header} at ${formatHour(hour)}`}
                   style={{ height: HOUR_HEIGHT }}
-                  className="block w-full border-b border-gray-100 hover:bg-gray-50"
+                  className="block w-full border-b border-line hover:bg-subtle"
                 />
               ))}
               {column.items.map((item) => (

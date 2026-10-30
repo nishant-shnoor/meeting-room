@@ -11,7 +11,6 @@ import useToast from '../hooks/useToast'
 import resourceService from '../services/resourceService'
 import bookingService from '../services/bookingService'
 import { canModifyBooking } from '../utils/booking'
-import { toDateValue, toTimeValue } from '../utils/dateTime'
 
 export default function EditBooking() {
   const { id } = useParams()
@@ -21,8 +20,15 @@ export default function EditBooking() {
   const loadBooking = useCallback(async () => {
     const booking = await bookingService.get(id)
     const setup = await resourceService.getBookingSetup(booking.resourceId)
-
-    return { booking, ...setup }
+    const equipment =
+      setup.resource.type === 'room'
+        ? await resourceService.listEquipment()
+        : []
+    return {
+      booking,
+      ...setup,
+      equipment: equipment.filter((item) => item.isActive && !item.builtInRoom),
+    }
   }, [id])
 
   const { data, loading, error, reload } = useFetch(loadBooking)
@@ -53,13 +59,16 @@ export default function EditBooking() {
             />
             <BookingForm
               resource={data.resource}
-              hours={data.hours}
               restrictions={data.restrictions}
+              equipment={data.equipment}
               ignoreBookingId={data.booking.id}
               initialValues={{
-                date: toDateValue(new Date(data.booking.startTime)),
-                startTime: toTimeValue(new Date(data.booking.startTime)),
-                endTime: toTimeValue(new Date(data.booking.endTime)),
+                date: data.booking.businessDate,
+                start: data.booking.startMinutes,
+                duration: data.booking.endMinutes - data.booking.startMinutes,
+                addOnIds: (data.booking.addOns ?? []).map(
+                  (item) => item.resourceId,
+                ),
                 purpose: data.booking.purpose ?? '',
               }}
               submitLabel="Save changes"

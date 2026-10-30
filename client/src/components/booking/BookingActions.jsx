@@ -5,9 +5,7 @@ import buttonClass from '../../utils/buttonStyles'
 import { canModifyBooking } from '../../utils/booking'
 
 export default function BookingActions({ booking, onCancel }) {
-  if (!canModifyBooking(booking)) {
-    return <span className="text-gray-400">-</span>
-  }
+  if (!canModifyBooking(booking)) return <span className="text-faint">-</span>
 
   return (
     <div className="flex items-center gap-1">

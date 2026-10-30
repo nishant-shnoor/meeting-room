@@ -11,6 +11,7 @@ import PageLoader from '../components/ui/PageLoader'
 import useFetch from '../hooks/useFetch'
 import resourceService from '../services/resourceService'
 import bookingService from '../services/bookingService'
+import { bookPath } from '../utils/paths'
 import { BOOKING_STATUS } from '../utils/constants'
 import {
   addDays,
@@ -25,45 +26,26 @@ import {
 } from '../utils/dateTime'
 
 const getRange = (view, cursor) => {
-  if (view === 'day') {
-    return { from: cursor, to: addDays(cursor, 1) }
-  }
-
+  if (view === 'day') return { from: cursor, to: addDays(cursor, 1) }
   if (view === 'week') {
     const from = startOfWeek(cursor)
-
     return { from, to: addDays(from, 7) }
   }
-
   const grid = getMonthGrid(cursor)
-
   return { from: grid[0], to: addDays(grid[grid.length - 1], 1) }
 }
 
 const getLabel = (view, cursor) => {
-  if (view === 'day') {
-    return formatLongDate(cursor)
-  }
-
-  if (view === 'month') {
-    return formatMonth(cursor)
-  }
-
+  if (view === 'day') return formatLongDate(cursor)
+  if (view === 'month') return formatMonth(cursor)
   const weekStart = startOfWeek(cursor)
   const weekEnd = addDays(weekStart, 6)
-
   return `${weekStart.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} - ${formatLongDate(weekEnd)}`
 }
 
 const shiftCursor = (view, cursor, direction) => {
-  if (view === 'day') {
-    return addDays(cursor, direction)
-  }
-
-  if (view === 'week') {
-    return addDays(cursor, direction * 7)
-  }
-
+  if (view === 'day') return addDays(cursor, direction)
+  if (view === 'week') return addDays(cursor, direction * 7)
   return addMonths(cursor, direction)
 }
 
@@ -102,7 +84,8 @@ export default function CalendarPage() {
     () =>
       (resources ?? []).filter(
         (resource) =>
-          resource.isActive && (!resourceId || resource.id === resourceId),
+          resource.isActive &&
+          (resourceId ? resource.id === resourceId : !resource.builtInRoom),
       ),
     [resources, resourceId],
   )
@@ -110,13 +93,14 @@ export default function CalendarPage() {
   const openBookingPage = useCallback(
     (targetResourceId, day, hour) => {
       const query = `date=${toDateValue(day)}&start=${minutesToTime(hour * 60)}`
+      const target = (resources ?? []).find(
+        (item) => item.id === targetResourceId,
+      )
       navigate(
-        targetResourceId
-          ? `/resources/${targetResourceId}/book?${query}`
-          : `/resources?date=${toDateValue(day)}`,
+        target ? bookPath(target, query) : `/rooms?date=${toDateValue(day)}`,
       )
     },
-    [navigate],
+    [navigate, resources],
   )
 
   const handleDaySlot = useCallback(
@@ -149,7 +133,9 @@ export default function CalendarPage() {
         }
         onNext={() => setCursor((current) => shiftCursor(view, current, 1))}
         onToday={() => setCursor(startOfDay(new Date()))}
-        resources={(resources ?? []).filter((resource) => resource.isActive)}
+        resources={(resources ?? []).filter(
+          (resource) => resource.isActive && !resource.builtInRoom,
+        )}
         resourceId={resourceId}
         onResourceChange={setResourceId}
       />
@@ -161,6 +147,7 @@ export default function CalendarPage() {
         <div className={loading ? 'opacity-60 transition-opacity' : undefined}>
           {view === 'day' && (
             <DayView
+              filtered={Boolean(resourceId)}
               resources={activeResources}
               bookings={bookings}
               onSlotClick={handleDaySlot}

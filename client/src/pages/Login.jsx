@@ -45,20 +45,51 @@ export default function Login() {
           <CalendarCheck className="size-8" />
           RoomBook
         </div>
-        <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+        >
           <div>
             <h1 className="text-xl font-bold text-gray-900">Sign in</h1>
             <p className="text-sm text-gray-500">Use your work email</p>
           </div>
 
           {serverError && (
-            <p role="alert" className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            <p
+              role="alert"
+              className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+            >
               {serverError}
             </p>
           )}
 
-          <TextField label="Email" type="email" autoComplete="email" placeholder="name@company.com" value={values.email} onChange={handleChange('email')} error={errors.email} />
-          <TextField label="Password" type="password" autoComplete="current-password" value={values.password} onChange={handleChange('password')} error={errors.password} />
+          <TextField
+            label="Email"
+            type="email"
+            autoComplete="email"
+            placeholder="name@company.com"
+            value={values.email}
+            onChange={handleChange('email')}
+            error={errors.email}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            value={values.password}
+            onChange={handleChange('password')}
+            error={errors.password}
+          />
+
+          <div className="text-right text-sm">
+            <Link
+              to="/forgot-password"
+              className="font-medium text-gray-900 underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <Button type="submit" loading={submitting} className="w-full">
             Sign in
@@ -66,7 +97,10 @@ export default function Login() {
 
           <p className="text-center text-sm text-gray-600">
             No account yet?{' '}
-            <Link to="/register" className="font-medium text-gray-900 underline">
+            <Link
+              to="/register"
+              className="font-medium text-gray-900 underline"
+            >
               Register
             </Link>
           </p>

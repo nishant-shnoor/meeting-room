@@ -8,7 +8,8 @@ import useFetch from '../hooks/useFetch'
 import useToast from '../hooks/useToast'
 import resourceService from '../services/resourceService'
 import bookingService from '../services/bookingService'
-import { minutesToTime, timeToMinutes, todayValue } from '../utils/dateTime'
+import { pickDefaultDuration, buildDurations } from '../utils/slots'
+import { timeToMinutes, todayValue } from '../utils/dateTime'
 
 export default function BookResource() {
   const { id } = useParams()
@@ -16,7 +17,18 @@ export default function BookResource() {
   const navigate = useNavigate()
   const toast = useToast()
 
-  const loadSetup = useCallback(() => resourceService.getBookingSetup(id), [id])
+  const loadSetup = useCallback(async () => {
+    const setup = await resourceService.getBookingSetup(id)
+    const equipment =
+      setup.resource.type === 'room'
+        ? await resourceService.listEquipment()
+        : []
+    return {
+      ...setup,
+      equipment: equipment.filter((item) => item.isActive && !item.builtInRoom),
+    }
+  }, [id])
+
   const { data, loading, error, reload } = useFetch(loadSetup)
 
   const handleSubmit = async (payload) => {
@@ -25,15 +37,7 @@ export default function BookResource() {
     navigate('/bookings')
   }
 
-  const startTime = searchParams.get('start') || ''
-  const initialValues = {
-    date: searchParams.get('date') || todayValue(),
-    startTime,
-    endTime: startTime
-      ? minutesToTime(Math.min(timeToMinutes(startTime) + 60, 1439))
-      : '',
-    purpose: '',
-  }
+  const startParam = searchParams.get('start')
 
   return (
     <>
@@ -44,9 +48,17 @@ export default function BookResource() {
             <ResourceSummary {...data} />
             <BookingForm
               resource={data.resource}
-              hours={data.hours}
               restrictions={data.restrictions}
-              initialValues={initialValues}
+              equipment={data.equipment}
+              initialValues={{
+                date: searchParams.get('date') || todayValue(),
+                start: startParam ? timeToMinutes(startParam) : null,
+                duration: pickDefaultDuration(
+                  buildDurations(data.restrictions),
+                ),
+                addOnIds: [],
+                purpose: '',
+              }}
               submitLabel="Confirm booking"
               onSubmit={handleSubmit}
             />

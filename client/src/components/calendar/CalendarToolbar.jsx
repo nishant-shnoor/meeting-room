@@ -43,15 +43,13 @@ export default function CalendarToolbar({
         </Button>
       </div>
 
-      <h2 className="min-w-0 flex-1 text-lg font-semibold text-gray-900">
-        {label}
-      </h2>
+      <h2 className="min-w-0 flex-1 text-lg font-semibold text-ink">{label}</h2>
 
       <select
         value={resourceId}
         onChange={(event) => onResourceChange(event.target.value)}
         aria-label="Filter by resource"
-        className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+        className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm"
       >
         <option value="">All resources</option>
         {resources.map((resource) => (
@@ -62,7 +60,7 @@ export default function CalendarToolbar({
       </select>
 
       <div
-        className="inline-flex rounded-md border border-gray-300 bg-white p-0.5"
+        className="inline-flex rounded-md border border-line-strong bg-surface p-0.5"
         role="tablist"
       >
         {views.map((item) => (
@@ -75,8 +73,8 @@ export default function CalendarToolbar({
             className={cn(
               'rounded px-3 py-1.5 text-sm font-medium',
               view === item.key
-                ? 'bg-gray-800 text-white'
-                : 'text-gray-700 hover:bg-gray-100',
+                ? 'bg-brand text-white dark:text-[#0b0e1c]'
+                : 'text-ink-soft hover:bg-sunken',
             )}
           >
             {item.label}
