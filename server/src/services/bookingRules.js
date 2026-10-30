@@ -5,6 +5,35 @@ import { invalid } from '../utils/httpError.js'
 
 const fail = (field, message) => invalid(message, { [field]: message })
 
+async function assertInsideHours(
+  { resourceId, startTime, endTime },
+  db,
+  label = '',
+) {
+  const start = toLocalParts(startTime)
+  const end = toLocalParts(endTime)
+
+  if (start.dateKey !== end.dateKey) {
+    throw fail('endTime', 'A booking must start and end on the same day')
+  }
+
+  const dayHours = await getHoursForDay(resourceId, start.dayOfWeek, db)
+
+  if (!dayHours?.isOpen) {
+    throw fail('date', `${label}Closed on ${DAY_NAMES[start.dayOfWeek]}`)
+  }
+
+  if (start.minutes < timeToMinutes(dayHours.openTime)) {
+    throw fail('startTime', `${label}Opens at ${dayHours.openTime}`)
+  }
+
+  if (end.minutes > timeToMinutes(dayHours.closeTime)) {
+    throw fail('endTime', `${label}Closes at ${dayHours.closeTime}`)
+  }
+
+  return { start, end }
+}
+
 export async function assertBookingAllowed(
   { resourceId, startTime, endTime },
   db,
@@ -17,26 +46,10 @@ export async function assertBookingAllowed(
     throw fail('startTime', 'Start time is in the past')
   }
 
-  const start = toLocalParts(startTime)
-  const end = toLocalParts(endTime)
-
-  if (start.dateKey !== end.dateKey) {
-    throw fail('endTime', 'A booking must start and end on the same day')
-  }
-
-  const dayHours = await getHoursForDay(resourceId, start.dayOfWeek, db)
-
-  if (!dayHours?.isOpen) {
-    throw fail('date', `Closed on ${DAY_NAMES[start.dayOfWeek]}`)
-  }
-
-  if (start.minutes < timeToMinutes(dayHours.openTime)) {
-    throw fail('startTime', `Opens at ${dayHours.openTime}`)
-  }
-
-  if (end.minutes > timeToMinutes(dayHours.closeTime)) {
-    throw fail('endTime', `Closes at ${dayHours.closeTime}`)
-  }
+  const { start, end } = await assertInsideHours(
+    { resourceId, startTime, endTime },
+    db,
+  )
 
   const {
     minDurationMinutes,
@@ -64,5 +77,22 @@ export async function assertBookingAllowed(
 
   if (startTime > addDays(new Date(), maxAdvanceDays)) {
     throw fail('date', `Bookings open up to ${maxAdvanceDays} days ahead`)
+  }
+}
+
+export async function assertAddOnAllowed(
+  { resourceId, name, startTime, endTime },
+  db,
+) {
+  const label = `${name}: `
+  await assertInsideHours({ resourceId, startTime, endTime }, db, label)
+
+  const { maxAdvanceDays } = await getRestrictions(resourceId, db)
+
+  if (startTime > addDays(new Date(), maxAdvanceDays)) {
+    throw fail(
+      'addOnIds',
+      `${label}bookings open up to ${maxAdvanceDays} days ahead`,
+    )
   }
 }
