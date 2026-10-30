@@ -13,10 +13,7 @@ An internal web application for booking meeting rooms and shared resources such 
 
 ## Current Development Status
 
-**Day 6 — Started work on Frontend**
-
-The backend of the project has been completed, now working on the frontend screens.  
-There are 11 screens to be made and out of 11, I have made 5 screens today.
+**Day 7 — Almost all work has been done**
 
 ## Development Progress
 
@@ -26,9 +23,9 @@ There are 11 screens to be made and out of 11, I have made 5 screens today.
 - [x] New Booking form
 - [x] My Booking Page
 - [x] Daily, weekly and monthly calendar views
-- [ ] Admin screen for resources
-- [ ] Admin screen for operating hours
-- [ ] Admin screen restrictions
-- [ ] Admin screen for all bookings
-- [ ] Connecting all screens to the backend API
+- [x] Admin screen for resources
+- [x] Admin screen for operating hours
+- [x] Admin screen restrictions
+- [x] Admin screen for all bookings
+- [x] Connecting all screens to the backend API
 - [ ] Testing and deployment
