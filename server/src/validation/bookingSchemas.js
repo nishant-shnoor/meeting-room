@@ -1,38 +1,57 @@
 import { z } from 'zod'
+import { shiftDateKey } from '../utils/time.js'
 
 const dateField = (label) =>
   z.coerce.date({ error: `${label} is required and must be a valid date` })
 
-const purposeField = z
-  .string()
-  .trim()
-  .max(255, 'Purpose can have at most 255 characters')
-  .nullish()
-  .transform((value) => value || null)
-
-const endAfterStart = (value) => value.endTime > value.startTime
-
-const endAfterStartError = {
-  path: ['endTime'],
-  message: 'End time must be after start time',
-}
+const dateKey = z
+  .string('Date is required')
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must look like YYYY-MM-DD')
+  .refine(
+    (value) => shiftDateKey(value, 0) === value,
+    'Date is not a real calendar day',
+  )
 
 export const bookingSchema = z
   .object({
     resourceId: z.uuid('Choose a valid resource'),
     startTime: dateField('Start time'),
     endTime: dateField('End time'),
-    purpose: purposeField,
+    purpose: z
+      .string()
+      .trim()
+      .max(255, 'Purpose can have at most 255 characters')
+      .nullish()
+      .transform((value) => value || null),
+    addOnIds: z
+      .array(z.uuid('Choose valid resources'))
+      .max(10, 'You can add up to 10 resources')
+      .optional(),
   })
-  .refine(endAfterStart, endAfterStartError)
+  .refine((value) => value.endTime > value.startTime, {
+    path: ['endTime'],
+    message: 'End time must be after start time',
+  })
 
 export const bookingUpdateSchema = z
   .object({
     startTime: dateField('Start time'),
     endTime: dateField('End time'),
-    purpose: purposeField,
+    purpose: z
+      .string()
+      .trim()
+      .max(255, 'Purpose can have at most 255 characters')
+      .nullish()
+      .transform((value) => value || null),
+    addOnIds: z
+      .array(z.uuid('Choose valid resources'))
+      .max(10, 'You can add up to 10 resources')
+      .optional(),
   })
-  .refine(endAfterStart, endAfterStartError)
+  .refine((value) => value.endTime > value.startTime, {
+    path: ['endTime'],
+    message: 'End time must be after start time',
+  })
 
 export const bookingFiltersSchema = z.object({
   date: z
@@ -73,3 +92,25 @@ export const calendarQuerySchema = z
       message: `Date range cannot be longer than ${maxRangeDays} days`,
     },
   )
+
+export const availabilityQuerySchema = z.object({
+  resourceId: z.uuid('Choose a valid resource'),
+  date: dateKey,
+  addOns: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean)
+        : [],
+    )
+    .pipe(
+      z
+        .array(z.uuid('Choose valid resources'))
+        .max(50, 'You can check up to 50 resources'),
+    ),
+  ignoreBookingId: z.uuid('Choose a valid booking').optional(),
+})

@@ -5,6 +5,9 @@ Table users {
   password_hash text [not null]
   role varchar(20) [not null, default: 'employee', note: 'employee or admin']
   is_active boolean [not null, default: true]
+  phone varchar(30) [not null, default: '']
+  department varchar(100) [not null, default: '']
+  job_title varchar(100) [not null, default: '']
   created_at timestamptz [not null, default: `now()`]
 }
 
@@ -16,7 +19,18 @@ Table resources {
   facilities text [not null, default: '']
   description text [not null, default: '']
   is_active boolean [not null, default: true]
+  asset_key varchar(40)
   created_at timestamptz [not null, default: `now()`]
+}
+
+Table room_resources {
+  room_id uuid [not null, ref: > resources.id]
+  resource_id uuid [not null, unique, ref: - resources.id, note: 'a resource can be built into one room only']
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (room_id, resource_id) [pk]
+  }
 }
 
 Table operating_hours {
@@ -45,6 +59,7 @@ Table bookings {
   id uuid [pk, default: `gen_random_uuid()`]
   resource_id uuid [not null, ref: > resources.id]
   user_id uuid [not null, ref: > users.id]
+  parent_booking_id uuid [ref: > bookings.id, note: 'set on the extra resource bookings added to a room booking']
   start_time timestamptz [not null]
   end_time timestamptz [not null]
   purpose varchar(255)
@@ -66,4 +81,11 @@ Table booking_history {
   action varchar(20) [not null, note: 'created, edited or cancelled']
   details text
   created_at timestamptz [not null, default: `now()`]
+}
+
+Table password_reset_requests {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  created_at timestamptz [not null, default: `now()`]
+  resolved_at timestamptz
 }

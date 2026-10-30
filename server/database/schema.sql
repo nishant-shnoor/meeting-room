@@ -91,6 +91,37 @@ create trigger bookings_touch_updated_at
   before update on bookings
   for each row execute function touch_updated_at();
 
+alter table users add column if not exists phone varchar(30) not null default '';
+alter table users add column if not exists department varchar(100) not null default '';
+alter table users add column if not exists job_title varchar(100) not null default '';
+
+alter table resources add column if not exists asset_key varchar(40);
+
+alter table bookings add column if not exists parent_booking_id uuid references bookings (id) on delete cascade;
+
+create index if not exists bookings_parent_idx on bookings (parent_booking_id);
+
+create table if not exists room_resources (
+  room_id uuid not null references resources (id) on delete cascade,
+  resource_id uuid not null references resources (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (room_id, resource_id),
+  constraint room_resource_differ check (room_id <> resource_id)
+);
+
+create unique index if not exists room_resources_resource_unique on room_resources (resource_id);
+
+create table if not exists password_reset_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  resolved_at timestamptz
+);
+
+create unique index if not exists password_reset_open_unique on password_reset_requests (user_id) where resolved_at is null;
+
+alter table password_reset_requests enable row level security;
+
 insert into operating_hours (resource_id, day_of_week, is_open)
 select r.id, day, day <> 0
 from resources r
@@ -107,3 +138,4 @@ alter table operating_hours enable row level security;
 alter table booking_restrictions enable row level security;
 alter table bookings enable row level security;
 alter table booking_history enable row level security;
+alter table room_resources enable row level security;

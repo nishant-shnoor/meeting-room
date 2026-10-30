@@ -7,11 +7,12 @@ export const validate =
 
     if (!result.success) {
       const fields = {}
-
       for (const issue of result.error.issues) {
         const key = issue.path.join('.')
 
-        if (!fields[key]) fields[key] = issue.message
+        if (!fields[key]) {
+          fields[key] = issue.message
+        }
       }
 
       throw invalid(result.error.issues[0].message, fields)

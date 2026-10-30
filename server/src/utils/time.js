@@ -17,7 +17,6 @@ export function toLocalParts(date) {
   const parts = Object.fromEntries(
     localFormatter.formatToParts(date).map(({ type, value }) => [type, value]),
   )
-
   return {
     dateKey: `${parts.year}-${parts.month}-${parts.day}`,
     dayOfWeek: weekdayIndex[parts.weekday],
@@ -25,26 +24,8 @@ export function toLocalParts(date) {
   }
 }
 
-function offsetAt(date) {
-  const parts = toLocalParts(date)
-  const [year, month, day] = parts.dateKey.split('-').map(Number)
-  const localMs = Date.UTC(year, month - 1, day) + parts.minutes * 60000
-  const wholeMinuteMs = Math.floor(date.getTime() / 60000) * 60000
-
-  return localMs - wholeMinuteMs
-}
-
-export function localTimeToDate(dateKey, minutes) {
-  const [year, month, day] = dateKey.split('-').map(Number)
-  const wanted = Date.UTC(year, month - 1, day) + minutes * 60000
-  const firstGuess = new Date(wanted - offsetAt(new Date(wanted)))
-
-  return new Date(wanted - offsetAt(firstGuess))
-}
-
 export function timeToMinutes(value) {
   const [hours, minutes] = value.split(':')
-
   return Number(hours) * 60 + Number(minutes)
 }
 
@@ -54,4 +35,60 @@ export function trimTime(value) {
 
 export function addDays(date, days) {
   return new Date(date.getTime() + days * 24 * 60 * 60 * 1000)
+}
+
+const pad = (value) => String(value).padStart(2, '0')
+
+const keyToUtcMillis = (dateKey, minutes = 0) => {
+  const [year, month, day] = dateKey.split('-').map(Number)
+  return Date.UTC(year, month - 1, day, 0, minutes)
+}
+
+export function dayOfWeekFor(dateKey) {
+  return new Date(keyToUtcMillis(dateKey)).getUTCDay()
+}
+
+export function shiftDateKey(dateKey, days) {
+  const moved = new Date(keyToUtcMillis(dateKey) + days * 24 * 60 * 60 * 1000)
+  return `${moved.getUTCFullYear()}-${pad(moved.getUTCMonth() + 1)}-${pad(moved.getUTCDate())}`
+}
+
+export function zonedTimeToUtc(dateKey, minutes) {
+  const wanted = keyToUtcMillis(dateKey, minutes)
+  let guess = wanted
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const local = toLocalParts(new Date(guess))
+    const shown = keyToUtcMillis(local.dateKey, local.minutes)
+
+    if (shown === wanted) {
+      break
+    }
+
+    guess += wanted - shown
+  }
+
+  return new Date(guess)
+}
+
+export function minutesOnDay(instant, dateKey, { isEnd = false } = {}) {
+  const local = toLocalParts(instant)
+
+  if (local.dateKey < dateKey) {
+    return 0
+  }
+
+  if (local.dateKey > dateKey) {
+    return 1440
+  }
+
+  if (isEnd && local.minutes === 0) {
+    return 0
+  }
+
+  return local.minutes
+}
+
+export function formatMinutes(total) {
+  return `${pad(Math.floor(total / 60))}:${pad(total % 60)}`
 }

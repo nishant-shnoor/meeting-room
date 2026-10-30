@@ -11,7 +11,6 @@ export async function authenticate(req, res, next) {
   }
 
   let payload
-
   try {
     payload = jwt.verify(token, env.jwtSecret)
   } catch {

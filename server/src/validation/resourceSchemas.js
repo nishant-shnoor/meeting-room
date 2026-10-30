@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { timeToMinutes } from '../utils/time.js'
-import { DAY_NAMES } from '../utils/constants.js'
+import {
+  DAY_NAMES,
+  RESOURCE_ASSET_KEYS,
+  ROOM_ASSET_KEYS,
+} from '../utils/constants.js'
 
 const emptyToNull = (value) =>
   value === '' || value === undefined ? null : value
@@ -34,6 +38,16 @@ export const resourceSchema = z
       .trim()
       .max(1000, 'Description can have at most 1000 characters')
       .default(''),
+    assetKey: z
+      .string()
+      .trim()
+      .max(40)
+      .nullish()
+      .transform((value) => value || null),
+    builtInResourceIds: z
+      .array(z.uuid('Choose valid resources'))
+      .max(30, 'A room can have at most 30 built-in resources')
+      .default([]),
   })
   .superRefine((value, context) => {
     if (value.type === 'room' && value.capacity === null) {
@@ -43,10 +57,34 @@ export const resourceSchema = z
         message: 'Capacity is required for rooms',
       })
     }
+
+    if (value.assetKey) {
+      const allowed =
+        value.type === 'room' ? ROOM_ASSET_KEYS : RESOURCE_ASSET_KEYS
+
+      if (!allowed.includes(value.assetKey)) {
+        context.addIssue({
+          code: 'custom',
+          path: ['assetKey'],
+          message: 'Choose one of the available pictures',
+        })
+      }
+    }
+
+    if (
+      new Set(value.builtInResourceIds).size !== value.builtInResourceIds.length
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['builtInResourceIds'],
+        message: 'Each built-in resource can be listed once',
+      })
+    }
   })
   .transform((value) => ({
     ...value,
     capacity: value.type === 'room' ? value.capacity : null,
+    builtInResourceIds: value.type === 'room' ? value.builtInResourceIds : [],
   }))
 
 export const statusSchema = z.object({
@@ -78,7 +116,6 @@ export const hoursSchema = z
         path: ['hours'],
         message: 'Each day of the week must appear once',
       })
-
       return
     }
 
