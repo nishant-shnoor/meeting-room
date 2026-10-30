@@ -5,7 +5,9 @@ import { ROLES, TOKEN_KEY } from '../utils/constants'
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
-  const [checking, setChecking] = useState(() => Boolean(localStorage.getItem(TOKEN_KEY)))
+  const [checking, setChecking] = useState(() =>
+    Boolean(localStorage.getItem(TOKEN_KEY)),
+  )
 
   useEffect(() => {
     if (!localStorage.getItem(TOKEN_KEY)) return
@@ -27,18 +29,37 @@ export default function AuthProvider({ children }) {
     setUser(signedInUser)
   }, [])
 
-  const login = useCallback(async (credentials) => startSession(await authService.login(credentials)), [startSession])
+  const login = useCallback(
+    async (credentials) => startSession(await authService.login(credentials)),
+    [startSession],
+  )
 
-  const register = useCallback(async (details) => startSession(await authService.register(details)), [startSession])
+  const register = useCallback(
+    async (details) => startSession(await authService.register(details)),
+    [startSession],
+  )
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }, [])
 
+  const updateUser = useCallback(
+    (details) => setUser((current) => ({ ...current, ...details })),
+    [],
+  )
+
   const value = useMemo(
-    () => ({ user, checking, isAdmin: user?.role === ROLES.admin, login, register, logout }),
-    [user, checking, login, register, logout],
+    () => ({
+      user,
+      checking,
+      isAdmin: user?.role === ROLES.admin,
+      login,
+      register,
+      logout,
+      updateUser,
+    }),
+    [user, checking, login, register, logout, updateUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

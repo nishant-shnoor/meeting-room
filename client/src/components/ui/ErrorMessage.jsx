@@ -5,7 +5,7 @@ export default function ErrorMessage({ message, onRetry }) {
   return (
     <div
       role="alert"
-      className="flex flex-wrap items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+      className="flex flex-wrap items-center gap-3 rounded-xl border border-rose/40 bg-rose-soft p-4 text-sm text-rose-ink"
     >
       <AlertCircle className="size-5 shrink-0" />
       <p className="flex-1">{message}</p>

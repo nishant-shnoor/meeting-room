@@ -6,6 +6,6 @@ export default function GuestRoute() {
   const { user, checking } = useAuth()
 
   if (checking) return <PageLoader />
-  if (user) return <Navigate to="/" replace />
+  if (user) return <Navigate to="/rooms" replace />
   return <Outlet />
 }

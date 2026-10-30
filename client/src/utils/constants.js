@@ -11,11 +11,6 @@ export const BOOKING_STATUS = {
   completed: 'completed',
 }
 
-export const RESOURCE_TYPES = [
-  { value: 'room', label: 'Room' },
-  { value: 'equipment', label: 'Equipment' },
-]
-
 export const DAY_NAMES = [
   'Sunday',
   'Monday',
@@ -38,3 +33,5 @@ export const DEFAULT_RESTRICTIONS = {
   maxAdvanceDays: 30,
   slotStepMinutes: 30,
 }
+
+export const SLOT_STEP_OPTIONS = [15, 30, 60]

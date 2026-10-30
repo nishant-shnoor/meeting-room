@@ -15,7 +15,6 @@ export const combineDateTime = (dateValue, timeValue) =>
 
 export const timeToMinutes = (timeValue) => {
   const [hours, minutes] = timeValue.split(':').map(Number)
-
   return hours * 60 + minutes
 }
 
@@ -48,7 +47,6 @@ export const getMonthGrid = (date) => {
     0,
   ).getDate()
   const weeks = Math.ceil((((firstDay.getDay() + 6) % 7) + daysInMonth) / 7)
-
   return Array.from({ length: weeks * 7 }, (_, index) =>
     addDays(gridStart, index),
   )
@@ -81,3 +79,28 @@ export const formatTimeRange = (start, end) =>
   `${formatTime(start)} - ${formatTime(end)}`
 
 export const formatHour = (hour) => `${pad(hour)}:00`
+
+export const formatDuration = (minutes) => {
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+
+  if (!hours) {
+    return `${rest} min`
+  }
+
+  if (!rest) {
+    return `${hours} hr`
+  }
+
+  return `${hours} hr ${rest} min`
+}
+
+export const formatLongDateKey = (dateKey) =>
+  new Date(`${dateKey}T12:00:00`).toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+
+export const shiftDateValue = (dateKey, days) =>
+  toDateValue(addDays(new Date(`${dateKey}T12:00:00`), days))

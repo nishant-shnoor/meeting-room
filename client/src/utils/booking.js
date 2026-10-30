@@ -1,5 +1,4 @@
 import { BOOKING_STATUS } from './constants'
-import { formatTimeRange } from './dateTime'
 
 export function getDisplayStatus(booking) {
   if (booking.status === BOOKING_STATUS.cancelled) {
@@ -18,20 +17,6 @@ export function canModifyBooking(booking) {
     booking.status === BOOKING_STATUS.confirmed &&
     new Date(booking.startTime) > new Date()
   )
-}
-
-export function findOverlap(bookings, start, end, ignoreId) {
-  return bookings.find(
-    (booking) =>
-      booking.id !== ignoreId &&
-      booking.status === BOOKING_STATUS.confirmed &&
-      new Date(booking.startTime) < end &&
-      new Date(booking.endTime) > start,
-  )
-}
-
-export function describeOverlap(booking) {
-  return `This time overlaps an existing booking (${formatTimeRange(booking.startTime, booking.endTime)}). Please pick another slot.`
 }
 
 export function groupByLane(bookings) {

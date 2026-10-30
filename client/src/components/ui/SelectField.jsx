@@ -12,7 +12,6 @@ export default function SelectField({
   ...selectProps
 }) {
   const id = useId()
-
   return (
     <FieldShell
       id={id}

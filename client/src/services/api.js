@@ -8,14 +8,19 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY)
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config 
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
 })
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const isAuthCall = error.config?.url?.startsWith('/auth/login') || error.config?.url?.startsWith('/auth/register')
+    const isAuthCall =
+      error.config?.url?.startsWith('/auth/login') ||
+      error.config?.url?.startsWith('/auth/register') ||
+      error.config?.url?.startsWith('/auth/me/password')
     if (error.response?.status === 401 && !isAuthCall) {
       localStorage.removeItem(TOKEN_KEY)
       window.dispatchEvent(new Event('session:expired'))
